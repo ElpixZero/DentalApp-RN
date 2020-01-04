@@ -2,21 +2,24 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import styled from 'styled-components/native';
 
-import SecondaryText from './SecondaryText.jsx'
+import SecondaryText from './SecondaryText.jsx';
+import Badge from './Badge.jsx';
 
 const Group = ( { user, diagnosis, active, time, navigate }) => {
   return (
-    <GroupItem onPress={() => navigate('Patient')}>
+    <GroupItem onPress={() => navigate('Patient', {
+      fullName: user.fullname, phone: user.phone, diagnosis, time
+    })}>
       <Avatar 
         source={{
           uri: user.avatar
         }} 
       />
       <View style={{flex: 1}}>
-        <FullName>{user.fullName}</FullName>
+        <FullName>{user.fullname}</FullName>
         <SecondaryText>{diagnosis}</SecondaryText>
       </View>
-      <GroupDate active={active}>{time}</GroupDate>
+      <Badge active={active} style={{borderRadius: 18, height: 32, maxWidth: 70}}>{time}</Badge>
   </GroupItem>
   );
 }
@@ -39,7 +42,7 @@ const GroupDate = styled.Text`
 
 const FullName = styled.Text`
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
 `;
 
 const GroupItem = styled.TouchableOpacity`

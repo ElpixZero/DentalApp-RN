@@ -1,14 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, SectionList } from 'react-native';
 import styled from 'styled-components/native';
-import { Foundation, FontAwesome } from '@expo/vector-icons';
+import { Foundation } from '@expo/vector-icons';
 
 import Button from '../components/Button.jsx';
 import SecondaryText from '../components/SecondaryText.jsx';
 import PatientAppintmentCard from '../components/PatientAppintmentCard.jsx';
 
-
-const PatientScreen = (props) => {
+const PatientScreen = ({navigation}) => {
   
   const dataForPatientAppointments = [
     {
@@ -44,8 +43,8 @@ const PatientScreen = (props) => {
   return (
     <Container>
       <PatientInfoBlock>
-        <FullName>Марина Алмазова</FullName>
-        <SecondaryText style={{marginBottom: 20}}>+7 (999) 200-66-55</SecondaryText>
+        <FullName>{navigation.getParam('fullName')}</FullName>
+        <SecondaryText style={{marginBottom: 20}}>{navigation.getParam('phone')}</SecondaryText>
         <FlexLineElems>
           <Button style={{marginRight: 10}}>
             <Text style={{fontSize: 16, lineHeight: 19, color: '#fff'}}>Формула зубов</Text>
@@ -72,7 +71,8 @@ const PatientAppointmentsTitle =  styled.Text`
   font-size: 18px;
   line-height: 21px;
   font-weight: 700;
-  margin-bottom: 12
+  margin-bottom: 12;
+  padding-left: 25px;
 `;
 
 const FlexLineElems = styled.View`
@@ -82,7 +82,7 @@ const FlexLineElems = styled.View`
 `;
 
 const FullName = styled.Text`
-  margin-top: 5px;
+  margin-top: 15px;
   font-size: 24px;
   line-height: 30px;
   color: #000000;
@@ -103,7 +103,8 @@ const PatientInfoBlock = styled.View`
 `;
 
 const PatientAppointments = styled.View`
-  padding: 0 25px;
+  padding: 0 0 20px 0;
+  margin-bottom: 20;
 `;
 
 

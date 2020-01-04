@@ -8,7 +8,7 @@ const GroupTitleView = ({title}) => {
 }
 
 GroupTitleView.defaultProps = {
-    title: 'untitled',
+  title: 'untitled',
 };
 
 const GroupTitle = styled.Text`
