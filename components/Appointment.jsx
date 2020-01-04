@@ -2,9 +2,11 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import styled from 'styled-components/native';
 
-const Group = ( { user, diagnosis, active, time }) => {
+import SecondaryText from './SecondaryText.jsx'
+
+const Group = ( { user, diagnosis, active, time, navigate }) => {
   return (
-    <GroupItem>
+    <GroupItem onPress={() => navigate('Patient')}>
       <Avatar 
         source={{
           uri: user.avatar
@@ -12,7 +14,7 @@ const Group = ( { user, diagnosis, active, time }) => {
       />
       <View style={{flex: 1}}>
         <FullName>{user.fullName}</FullName>
-        <GrayText>{diagnosis}</GrayText>
+        <SecondaryText>{diagnosis}</SecondaryText>
       </View>
       <GroupDate active={active}>{time}</GroupDate>
   </GroupItem>
@@ -26,24 +28,18 @@ Group.defaultProps = {
 const GroupDate = styled.Text`
   background: ${props => props.active ? '#2A86FF' : '#E9F5FF'}
   border-radius: 18px;
-  padding: 8px 0;
+  height: 32px;
   width: 70px;
   font-size: 14px;
   color: ${props => props.active ? '#fff' : '#4294FF'}
   text-align: center;
   font-weight: 700;
-  }
+  line-height: 30px;
 `;
 
 const FullName = styled.Text`
   font-size: 16px;
   font-weight: 600;
-`;
-
-
-const GrayText = styled.Text`
-  font-size: 16px;
-  color: #8B979F;
 `;
 
 const GroupItem = styled.TouchableOpacity`
@@ -52,7 +48,6 @@ const GroupItem = styled.TouchableOpacity`
   flex-direction: row;
   border-bottom-width: 1px;
   border-bottom-color: #F3F3F3;
-  
 `;
 
 const Avatar = styled.Image`
@@ -60,6 +55,6 @@ const Avatar = styled.Image`
   width: 40px;
   height: 40px;
   margin-right: 15px;
-  `;
+`;
 
 export default Group;

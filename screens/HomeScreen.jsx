@@ -97,31 +97,35 @@ const data = [
     }
 ];
 
-class HomeScreen extends React.Component {
-    static navigationOptions = {
-        title: 'Пациентыs',
-        headerTintColor: '#2A86FF',
-    };
-
-    render() {
-        return (
-            <Container>
-            <SectionList
-                sections={data}
-                keyExtractor={(item, index) => index}
-                renderItem={({ item } ) => <Appointment {...item} />}
-                renderSectionHeader={({ section: { title } }) => (
-                <AppointmentTitle title={title}/>
-                )}
-            />
-            <PlusButton />
-            </Container>
-        );
-    }
+const HomeScreen = (props) => {
+  const { navigation } = props;
+  return (
+      <Container>
+        <SectionList
+            sections={data}
+            keyExtractor={(item, index) => index}
+            renderItem={({ item } ) => <Appointment navigate={navigation.navigate} {...item} />}
+            renderSectionHeader={({ section: { title } }) => (
+            <AppointmentTitle title={title}/>
+            )}
+        />
+        <PlusButton />
+      </Container>
+  );
 }
+
+HomeScreen.navigationOptions = {
+  title: 'Пациенты',
+  headerTintColor: '#2A86FF',
+  headerStyle: {
+    elevation: 0.8,
+    shadowOpacity: 0.8,
+  }
+};
 
 const Container = styled.View`
   flex: 1;
+  background-color: #fff;
 `;
 
 export default HomeScreen;
