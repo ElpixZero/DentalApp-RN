@@ -4,19 +4,18 @@ import styled from 'styled-components/native';
 
 import SecondaryText from './SecondaryText.jsx';
 import Badge from './Badge.jsx';
+import getAvatarColor from '../utils/getAvatarColor';
 
-const Group = ( { user, diagnosis, active, time, navigate }) => {
+const Group = ( { patient, diagnosis, active, time, navigate }) => {
   return (
     <GroupItem onPress={() => navigate('Patient', {
-      fullName: user.fullname, phone: user.phone, diagnosis, time
+      fullName: patient.fullName, phone: patient.phone, diagnosis, time
     })}>
-      <Avatar 
-        source={{
-          uri: user.avatar
-        }} 
-      />
+      <Avatar style={{backgroundColor: getAvatarColor(patient.fullName[0]).background}}>
+        <Letter style={{color: getAvatarColor(patient.fullName[0]).color}}>{patient.fullName[0].toUpperCase()}</Letter>
+      </Avatar>
       <View style={{flex: 1}}>
-        <FullName>{user.fullname}</FullName>
+        <FullName>{patient.fullName}</FullName>
         <SecondaryText>{diagnosis}</SecondaryText>
       </View>
       <Badge active={active} style={{borderRadius: 18, height: 32, maxWidth: 70}}>{time}</Badge>
@@ -27,18 +26,6 @@ const Group = ( { user, diagnosis, active, time, navigate }) => {
 Group.defaultProps = {
   items: []
 };
-
-const GroupDate = styled.Text`
-  background: ${props => props.active ? '#2A86FF' : '#E9F5FF'}
-  border-radius: 18px;
-  height: 32px;
-  width: 70px;
-  font-size: 14px;
-  color: ${props => props.active ? '#fff' : '#4294FF'}
-  text-align: center;
-  font-weight: 700;
-  line-height: 30px;
-`;
 
 const FullName = styled.Text`
   font-size: 16px;
@@ -53,11 +40,19 @@ const GroupItem = styled.TouchableOpacity`
   border-bottom-color: #F3F3F3;
 `;
 
-const Avatar = styled.Image`
+const Letter = styled.Text`
+  font-size: 20px;
+  font-weight: 700;
+`;
+
+const Avatar = styled.View`
   border-radius: 30px;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   margin-right: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default Group;

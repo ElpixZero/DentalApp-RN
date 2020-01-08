@@ -2,9 +2,9 @@ import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 
-export default function PlusButtonView() {
+export default function PlusButtonView({navigate}) {
   return (
-    <PlusButton style={{
+    <PlusButton onPress={navigate} style={{
         shadowColor: "#2A86FF",
         shadowOffset: {
             width: 0,
