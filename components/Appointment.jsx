@@ -9,7 +9,7 @@ import getAvatarColor from '../utils/getAvatarColor';
 const Group = ( { patient, diagnosis, active, time, navigate }) => {
   return (
     <GroupItem onPress={() => navigate('Patient', {
-      fullName: patient.fullName, phone: patient.phone, diagnosis, time
+      fullName: patient.fullName, phone: patient.phone, diagnosis, time, id: patient._id
     })}>
       <Avatar style={{backgroundColor: getAvatarColor(patient.fullName[0]).background}}>
         <Letter style={{color: getAvatarColor(patient.fullName[0]).color}}>{patient.fullName[0].toUpperCase()}</Letter>

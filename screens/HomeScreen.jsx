@@ -27,15 +27,39 @@ const HomeScreen = ({ navigation }) => {
     fetchAppoinements()
   }, []);
 
+  const removeAppointment = id => {
+    appointmentsApi.remove(id).then( () => {
+
+    }).catch( () => {
+
+    })  
+  }
+
   return (
     <Container>
       { data && <SectionList
           sections={data}
           refreshing={isLoading}
           onRefresh={fetchAppoinements}
-          keyExtractor={(index) => index}
+          keyExtractor={(item, index) => item + index}
           renderItem={({ item } ) => (
-            <Swipeable rightButtons={[<Text>Right 1</Text>,<Text>Right 2</Text> ]}>
+            <Swipeable rightButtons={
+              [<CardButton style={{
+                  backgroundColor: '#B4C1CB',
+                }}>
+                <Ionicons 
+                  name="md-create" 
+                  size={22} 
+                  color="#fff"
+                  />
+               </CardButton>, 
+                <CardButton style={{
+                  backgroundColor: '#F85A5A',
+                 }}>
+                <Ionicons name="ios-close" size={40} color="#fff" />
+               </CardButton>
+               ]
+            }>
               <Appointment navigate={navigation.navigate} {...item} />
             </Swipeable>
           )}
@@ -58,6 +82,16 @@ HomeScreen.navigationOptions = {
     shadowOpacity: 0.8,
   }
 };
+
+const CardButton = styled.TouchableOpacity`
+  width: 70px;
+  height: 80%;
+  background-color: #B4C1CB;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+`;
 
 const Container = styled.View`
   flex: 1;

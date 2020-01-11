@@ -4,10 +4,9 @@ import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
 import Button from '../components/Button'
-import {patiensApi} from '../utils/api';
+import {patientsApi} from '../utils/api';
 
 const AddPatientScreen = ( {navigation}) => {
-  console.log('test', navigation);
   const [values, setValues] = React.useState({
     fullName: '',
     phone: ''
@@ -22,8 +21,10 @@ const AddPatientScreen = ( {navigation}) => {
   }
 
   const onSubmit = () => {
-    patiensApi.add(values).then(() => {
-      navigation.navigate('Home')
+    patientsApi.add(values).then(() => {
+      navigation.navigate('Home');
+    }).catch(e => {
+      alert('К сожалению что-то пошло не так..');
     })
   }
 
