@@ -12,6 +12,7 @@ import Button from '../components/Button.jsx';
 import SecondaryText from '../components/SecondaryText.jsx';
 import PatientAppintmentCard from '../components/PatientAppintmentCard.jsx';
 import { SafeAreaView, View, FlatList, StyleSheet } from 'react-native';
+import PlusButton from '../components/PlusButton';
 
 const PatientScreen = ({navigation}) => {
   const patientPhone = navigation.getParam('phone');
@@ -146,6 +147,9 @@ const PatientScreen = ({navigation}) => {
               keyExtractor={item => item._id}
         />}
       </PatientAppointments>
+      <PlusButton navigate={() => navigation.navigate('AddAppointment', {
+        navigation: navigation
+      })} />
     </Container>
   );
 }

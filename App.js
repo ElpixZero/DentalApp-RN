@@ -2,7 +2,7 @@ import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
-import {HomeScreen, PatientScreen, AddPatientsScreen} from './screens';
+import {HomeScreen, PatientScreen, AddPatientsScreen, AddAppointmentScreen} from './screens';
 
 const AppNavigator = createStackNavigator({
     Home: {
@@ -13,6 +13,9 @@ const AppNavigator = createStackNavigator({
     },
     AddPatient: {
       screen: AddPatientsScreen,
+    },
+    AddAppointment: {
+      screen: AddAppointmentScreen,
     }
   },
   {

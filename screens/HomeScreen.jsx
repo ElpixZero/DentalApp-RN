@@ -1,8 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, SectionList } from 'react-native';
+import { SectionList, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
-import axios from 'axios';
 import Swipeable from 'react-native-swipeable-row';
 
 import { appointmentsApi } from '../utils/api';
@@ -23,16 +22,32 @@ const HomeScreen = ({ navigation }) => {
       setIsLoading(false)
     });
   }
+
   React.useEffect( () => {
     fetchAppoinements()
   }, []);
 
   const removeAppointment = id => {
-    appointmentsApi.remove(id).then( () => {
-
-    }).catch( () => {
-
-    })  
+    Alert.alert(
+      'Удаление приема',
+      'Вы действиетельно хотите удалить примем?',
+      [
+        {
+          text: 'Отмена',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'Удалить', onPress: () => {
+          setIsLoading(true);
+          appointmentsApi.remove(id).then( () => {
+            fetchAppoinements();
+          }).catch((e) => {
+            setIsLoading(false);
+          })
+        }},
+      ],
+      {cancelable: false},
+    );
   }
 
   return (
@@ -41,9 +56,9 @@ const HomeScreen = ({ navigation }) => {
           sections={data}
           refreshing={isLoading}
           onRefresh={fetchAppoinements}
-          keyExtractor={(item, index) => item + index}
+          keyExtractor={item => item._id}
           renderItem={({ item } ) => (
-            <Swipeable rightButtons={
+            <Swipeable key={item._id} rightButtons={
               [<CardButton style={{
                   backgroundColor: '#B4C1CB',
                 }}>
@@ -55,7 +70,8 @@ const HomeScreen = ({ navigation }) => {
                </CardButton>, 
                 <CardButton style={{
                   backgroundColor: '#F85A5A',
-                 }}>
+                 }}
+                 onPress={removeAppointment.bind(this, item._id)}>
                 <Ionicons name="ios-close" size={40} color="#fff" />
                </CardButton>
                ]
@@ -75,7 +91,7 @@ const HomeScreen = ({ navigation }) => {
 }
 
 HomeScreen.navigationOptions = {
-  title: 'Пациенты',
+  title: 'Журнал пациентов',
   headerTintColor: '#2A86FF',
   headerStyle: {
     elevation: 0.8,
