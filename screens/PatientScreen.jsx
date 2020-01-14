@@ -18,101 +18,14 @@ const PatientScreen = ({navigation}) => {
   const patientPhone = navigation.getParam('phone');
   const [appointments, setAppointmetns] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
-  const dataForPatientAppointments = [
-    {
-      data: [
-        {
-          toothNumber: 11,
-          diagnosis: 'пульпит',
-          time: '11.10.2019 - 15:40',
-          price: '1500'
-        },
-        {
-          toothNumber: 10,
-          diagnosis: 'пульпит',
-          time: '11.10.2019 - 15:40',
-          price: '1500'
-        },
-        {
-          toothNumber: 12,
-          diagnosis: 'пульпит',
-          time: '11.10.2019 - 15:40',
-          price: '1500'
-        },
-        {
-          toothNumber: 18,
-          diagnosis: 'пульпит',
-          time: '11.10.2019 - 15:40',
-          price: '1500'
-        },
-      ]
-    },
-  ];
-
-  const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-  ];
-
-  console.log('is', appointments);
-
+ 
   React.useEffect( () => {
     const patientId = navigation.getParam('id');
     patientsApi.getOne(patientId)
     .then(({data}) => {
       setAppointmetns(data.data.appointments);
-      setIsLoading(false);
     })
-    .catch((e) => {
-      setIsLoading(false);
-      alert(e);
-    });
+    .finally(() => setIsLoading(false));
   }, []);
 
   return (
@@ -148,7 +61,7 @@ const PatientScreen = ({navigation}) => {
         />}
       </PatientAppointments>
       <PlusButton navigate={() => navigation.navigate('AddAppointment', {
-        navigation: navigation
+        navigation: navigation, patientId: navigation.getParam('id'),
       })} />
     </Container>
   );

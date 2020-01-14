@@ -1,31 +1,30 @@
 import React from 'react';
-import { SectionList, Alert } from 'react-native';
+import { FlatList, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 import Swipeable from 'react-native-swipeable-row';
 
-import { appointmentsApi } from '../utils/api';
+import { patientsApi } from '../utils/api';
 import Appointment from '../components/Appointment';
 import AppointmentTitle from '../components/AppointmentTitle';
 import PlusButton from '../components/PlusButton';
 
-const HomeScreen = ({ navigation }) => {
-  console.log('RENDER');
+const PatientsScreen = ({ navigation }) => {
   const [data, setData] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const fetchAppoinements = () => {
+  const fetchPatients = () => {
     setIsLoading(true);  
-    appointmentsApi.get().then( ({ data }) => {
+    patientsApi.get().then( ({ data }) => {
       setData(data.data);
     }).finally(() => setIsLoading(false));
   }
 
   React.useEffect( () => {
-    fetchAppoinements();
-  }, [navigation.getParam('updateDate')]);
+    const fetchPatients = () => {
+    }, []);
 
-  const removeAppointment = id => {
+  const removePatients = id => {
     Alert.alert(
       'Удаление приема',
       'Вы действиетельно хотите удалить примем?',
@@ -37,8 +36,8 @@ const HomeScreen = ({ navigation }) => {
         },
         {text: 'Удалить', onPress: () => {
           setIsLoading(true);
-          appointmentsApi.remove(id).then( () => {
-            fetchAppoinements();
+          patientsApi.remove(id).then( () => {
+            fetchPatients();
           }).catch((e) => {
             setIsLoading(false);
           })
@@ -50,10 +49,9 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <Container>
-      { data && <SectionList
-          sections={data}
+      { data && <FlatList
           refreshing={isLoading}
-          onRefresh={fetchAppoinements}
+          onRefresh={fetchPatients  }
           keyExtractor={item => item._id}
           renderItem={({ item } ) => (
             <Swipeable key={item._id} rightButtons={
@@ -69,7 +67,7 @@ const HomeScreen = ({ navigation }) => {
                 <CardButton style={{
                   backgroundColor: '#F85A5A',
                  }}
-                 onPress={removeAppointment.bind(this, item._id)}>
+                 onPress={removePatients.bind(this, item._id)}>
                 <Ionicons name="ios-close" size={40} color="#fff" />
                </CardButton>
                ]
@@ -112,4 +110,4 @@ const Container = styled.View`
   background-color: #fff;
 `;
 
-export default HomeScreen;
+export default PatientsScreen;
