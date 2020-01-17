@@ -1,5 +1,5 @@
 import React from 'react';
-import { SectionList, Alert } from 'react-native';
+import { SectionList, Alert, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 import Swipeable from 'react-native-swipeable-row';
@@ -10,7 +10,6 @@ import AppointmentTitle from '../components/AppointmentTitle';
 import PlusButton from '../components/PlusButton';
 
 const HomeScreen = ({ navigation }) => {
-  console.log('RENDER');
   const [data, setData] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -74,7 +73,7 @@ const HomeScreen = ({ navigation }) => {
                </CardButton>
                ]
             }>
-              <Appointment navigate={navigation.navigate} {...item} />
+              <Appointment navigate={navigation.navigate} props={{...item}} />
             </Swipeable>
           )}
           renderSectionHeader={({ section: { title } }) => (
@@ -88,14 +87,19 @@ const HomeScreen = ({ navigation }) => {
   );
 }
 
-HomeScreen.navigationOptions = {
+HomeScreen.navigationOptions = ({navigation}) => ({
   title: 'Журнал приемов',
   headerTintColor: '#2A86FF',
   headerStyle: {
     elevation: 0.8,
     shadowOpacity: 0.8,
-  }
-};
+  },
+  headerRight: () => (
+    <TouchableOpacity onPress={navigation.navigate.bind(this, 'Patients')} style={{marginRight: 15}}>
+      <Ionicons name="md-people" size={22} color="black" />
+    </TouchableOpacity>
+  ),
+});
 
 const CardButton = styled.TouchableOpacity`
   width: 70px;

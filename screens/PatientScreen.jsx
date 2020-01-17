@@ -6,33 +6,39 @@ import { ActivityIndicator,
 } from 'react-native';
 import styled from 'styled-components/native';
 import { Foundation } from '@expo/vector-icons';
+import phoneFormat from '../utils/phoneFormat';
 
-import { patientsApi } from '../utils/api';
+import { patientsApi, appointmentsApi } from '../utils/api';
 import Button from '../components/Button.jsx';
 import SecondaryText from '../components/SecondaryText.jsx';
 import PatientAppintmentCard from '../components/PatientAppintmentCard.jsx';
 import { SafeAreaView, View, FlatList, StyleSheet } from 'react-native';
 import PlusButton from '../components/PlusButton';
 
-const PatientScreen = ({navigation}) => {
+const PatientScreen = ({ navigation }) => {
   const patientPhone = navigation.getParam('phone');
   const [appointments, setAppointmetns] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
  
-  React.useEffect( () => {
+  fetchAppointments = () => {
     const patientId = navigation.getParam('id');
+
     patientsApi.getOne(patientId)
     .then(({data}) => {
       setAppointmetns(data.data.appointments);
     })
     .finally(() => setIsLoading(false));
+  }
+  
+  React.useEffect( () => {
+    fetchAppointments();
   }, []);
 
   return (
     <Container>
       <PatientInfoBlock>
         <FullName>{navigation.getParam('fullName')}</FullName>
-        <SecondaryText style={{marginBottom: 20}}>{patientPhone}</SecondaryText>
+        <SecondaryText style={{marginBottom: 20}}>{phoneFormat(patientPhone)}</SecondaryText>
         <FlexLineElems>
           <Button style={{marginRight: 10}}>
             <Text style={{fontSize: 16, lineHeight: 19, color: '#fff'}}>Формула зубов</Text>
@@ -56,6 +62,8 @@ const PatientScreen = ({navigation}) => {
             />
           : <FlatList
               data={appointments}
+              refreshing={isLoading}
+              onRefresh={fetchAppointments}
               renderItem={({ item }) => <PatientAppintmentCard {...item} />}
               keyExtractor={item => item._id}
         />}

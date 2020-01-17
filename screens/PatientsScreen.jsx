@@ -1,16 +1,18 @@
 import React from 'react';
-import { FlatList, Alert } from 'react-native';
+import { FlatList, Alert, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 import Swipeable from 'react-native-swipeable-row';
+import {Item, Input} from 'native-base';
 
 import { patientsApi } from '../utils/api';
 import Appointment from '../components/Appointment';
-import AppointmentTitle from '../components/AppointmentTitle';
 import PlusButton from '../components/PlusButton';
+import phoneFormat from '../utils/phoneFormat';
 
 const PatientsScreen = ({ navigation }) => {
   const [data, setData] = React.useState(null);
+  const [filter, setFilter] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
   const fetchPatients = () => {
@@ -20,14 +22,10 @@ const PatientsScreen = ({ navigation }) => {
     }).finally(() => setIsLoading(false));
   }
 
-  React.useEffect( () => {
-    const fetchPatients = () => {
-    }, []);
-
   const removePatients = id => {
     Alert.alert(
       'Удаление приема',
-      'Вы действиетельно хотите удалить примем?',
+      'Вы действиетельно хотите удалить пациента?',
       [
         {
           text: 'Отмена',
@@ -47,11 +45,26 @@ const PatientsScreen = ({ navigation }) => {
     );
   }
 
+  const onSearch = e => {
+    setFilter(e.nativeEvent.text)
+  }
+
+  
+  React.useEffect( () => {
+    fetchPatients();
+  }, []);
+
   return (
     <Container>
+      <View style={{padding: 20,}}>
+        <Item regular style={{paddingLeft: 15, borderRadius: 30}}>
+          <Input onChange={onSearch } placeholder="Поиск..." />
+        </Item>
+      </View>
       { data && <FlatList
+          data={data.filter( item => item.fullName.toLowerCase().indexOf(filter.toLowerCase()) >= 0)} 
           refreshing={isLoading}
-          onRefresh={fetchPatients  }
+          onRefresh={fetchPatients}
           keyExtractor={item => item._id}
           renderItem={({ item } ) => (
             <Swipeable key={item._id} rightButtons={
@@ -64,19 +77,19 @@ const PatientsScreen = ({ navigation }) => {
                   color="#fff"
                   />
                </CardButton>, 
-                <CardButton style={{
+               <CardButton style={{
                   backgroundColor: '#F85A5A',
                  }}
                  onPress={removePatients.bind(this, item._id)}>
                 <Ionicons name="ios-close" size={40} color="#fff" />
                </CardButton>
-               ]
+              ]
             }>
-              <Appointment navigate={navigation.navigate} {...item} />
+              <Appointment navigate={navigation.navigate} props={{
+                patient: {...item},
+                diagnosis: phoneFormat(item.phone),
+              }} />
             </Swipeable>
-          )}
-          renderSectionHeader={({ section: { title } }) => (
-            <AppointmentTitle title={title}/>
           )}
       />}
       <PlusButton navigate={() => navigation.navigate('AddPatient', {
@@ -86,8 +99,8 @@ const PatientsScreen = ({ navigation }) => {
   );
 }
 
-HomeScreen.navigationOptions = {
-  title: 'Журнал приемов',
+PatientsScreen.navigationOptions = {
+  title: 'Cписок пациентов',
   headerTintColor: '#2A86FF',
   headerStyle: {
     elevation: 0.8,

@@ -5,7 +5,7 @@ import { Foundation, Ionicons } from '@expo/vector-icons';
 
 import Badge from './Badge.jsx';
 
-const PatientAppointmentCardView = ({ toothNumber, diagnosis, time, price }) => {
+const PatientAppointmentCardView = ({ dentNumber, diagnosis, time, price }) => {
   return (
     <PatientAppointmentCard>
       <MoreButton>
@@ -14,7 +14,7 @@ const PatientAppointmentCardView = ({ toothNumber, diagnosis, time, price }) => 
       <FlexLineElems style={{marginBottom: 12}}>
         <Foundation name="clipboard-notes" size={15} color="#A3A3A3" />
         <PatientAppointmentsCardLine>
-          Зуб: <Text style={{fontWeight: '700'}}>{toothNumber}</Text>
+          Зуб: <Text style={{fontWeight: '700'}}>{dentNumber}</Text>
         </PatientAppointmentsCardLine>
       </FlexLineElems>  
 

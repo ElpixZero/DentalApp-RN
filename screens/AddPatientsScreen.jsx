@@ -24,7 +24,7 @@ const AddPatientScreen = ( {navigation}) => {
     patientsApi.add(values).then(() => {
       navigation.navigate('Home');
     }).catch(e => {
-      alert('К сожалению что-то пошло не так..');
+      alert(e);
     })
   }
 
