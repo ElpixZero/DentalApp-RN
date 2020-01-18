@@ -14,13 +14,16 @@ import {appointmentsApi} from '../utils/api';
 const ItemPicker = Picker.Item;
 
 const AddAppointmentScreen = ( {navigation}) => {
+  const typeOfView = navigation.getParam('type');
+  const propsData = navigation.getParam('data');
+
   const [values, setValues] = React.useState({
-    patient: navigation.getParam('patientId'),
-    dentNumber: '',
-    diagnosis: 'пульпит',
-    price: '',
-    date: '',
-    time: ''
+    patient: `${propsData && propsData._id ? propsData._id : navigation.getParam('patientId')}`,
+    dentNumber: `${propsData && propsData.dentNumber ? propsData.dentNumber : ''}`,
+    diagnosis: `${propsData && propsData.diagnosis ? propsData.diagnosis : 'пульпит'}`,
+    price: `${propsData && propsData.price ? propsData.price : ''}`,
+    date: `${propsData && propsData.date ? propsData.date : ''}`,
+    time:  `${propsData && propsData.time ? propsData.time : ''}`,
   });
 
   const [dateTimePickerOptions, setDateTimePickerOptions] = React.useState({
@@ -51,25 +54,40 @@ const AddAppointmentScreen = ( {navigation}) => {
     })
   }
 
+  const submitError = e => {
+    alert(e);
+    if (e.response.data.message.length === 1) {
+      const errorField = e.response.data.message[0].param;
+      alert(`Ошибка!\n\nПоле: "${fieldsLabels[errorField]}" указан неверно`);
+    } else {
+      let errorsArr = [];
+
+      e.response.data.message.forEach( item => {
+        errorsArr.push(`"${fieldsLabels[item.param]}"`);
+      });
+
+      return alert(`Ошибка!\n\nПоля: ${errorsArr.join(', ')} указаны неверно.`);
+    }
+  }
+
   const onSubmit = () => {
+    if (typeOfView === 'edit') {
+      console.log({
+        id: values.patient,
+        values
+      })
+      return appointmentsApi.edit(values.patient, values).then(() => {
+        navigation.navigate('Home', {
+          updateDate: new Date()
+        });
+      }).catch(submitError);
+    }
+
     appointmentsApi.add(values).then(() => {
       navigation.navigate('Home', {
         updateDate: new Date()
       });
-    }).catch(e => {
-      if (e.response.data.message.length === 1) {
-        const errorField = e.response.data.message[0].param;
-        alert(`Ошибка!\n\nПоле: "${fieldsLabels[errorField]}" указан неверно`);
-      } else {
-        let errorsArr = [];
-
-        e.response.data.message.forEach( item => {
-          errorsArr.push(`"${fieldsLabels[item.param]}"`);
-        });
-
-        return alert(`Ошибка!\n\nПоля: ${errorsArr.join(', ')} указаны неверно.`);
-      }
-    })
+    }).catch(submitError);
   }
 
   const handleDateTimePickerOptions = mode => {
@@ -190,11 +208,18 @@ const AddAppointmentScreen = ( {navigation}) => {
             />}  
           </View>
 
-          <Button onPress={(onSubmit)} style={{marginTop: 30, display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: 'green',}}>
-            <Ionicons name="ios-add" size={20} color="white" />
-            <Text 
-              style={{marginLeft: 5, color: '#fff', fontSize: 16, lineHeight: 19, }}>Добавить</Text>
-          </Button>
+          { typeOfView === 'create' ? 
+            <Button onPress={(onSubmit)} style={{marginTop: 30, display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: 'green',}}>
+              <Ionicons name="ios-add" size={20} color="white" />
+              <Text 
+                style={{marginLeft: 5, color: '#fff', fontSize: 16, lineHeight: 19, }}>Добавить</Text>
+            </Button>
+            : <Button onPress={(onSubmit)} style={{marginTop: 30, display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: 'blue',}}>
+              <Ionicons name="ios-checkmark" size={30} color="white" />
+              <Text 
+                style={{marginLeft: 5, color: '#fff', fontSize: 16, lineHeight: 19, }}>Сохранить</Text>
+            </Button>
+          }
         </Form>
       </Content>
       </Container>

@@ -7,7 +7,6 @@ import Swipeable from 'react-native-swipeable-row';
 import { appointmentsApi } from '../utils/api';
 import Appointment from '../components/Appointment';
 import AppointmentTitle from '../components/AppointmentTitle';
-import PlusButton from '../components/PlusButton';
 
 const HomeScreen = ({ navigation }) => {
   const [data, setData] = React.useState(null);
@@ -58,13 +57,19 @@ const HomeScreen = ({ navigation }) => {
             <Swipeable key={item._id} rightButtons={
               [<CardButton style={{
                   backgroundColor: '#B4C1CB',
-                }}>
+                }}
+                onPress={navigation.navigate.bind(this, 'AddAppointment', {
+                  type: 'edit',
+                  data: item,
+                })}
+              >
                 <Ionicons 
                   name="md-create" 
                   size={22} 
                   color="#fff"
                   />
                </CardButton>, 
+
                 <CardButton style={{
                   backgroundColor: '#F85A5A',
                  }}
@@ -80,9 +85,6 @@ const HomeScreen = ({ navigation }) => {
             <AppointmentTitle title={title}/>
           )}
       />}
-      <PlusButton navigate={() => navigation.navigate('AddPatient', {
-        navigation: navigation
-      })} />
     </Container>
   );
 }
