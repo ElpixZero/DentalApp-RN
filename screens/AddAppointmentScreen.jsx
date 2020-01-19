@@ -55,7 +55,6 @@ const AddAppointmentScreen = ( {navigation}) => {
   }
 
   const submitError = e => {
-    alert(e);
     if (e.response.data.message.length === 1) {
       const errorField = e.response.data.message[0].param;
       alert(`Ошибка!\n\nПоле: "${fieldsLabels[errorField]}" указан неверно`);
@@ -72,10 +71,6 @@ const AddAppointmentScreen = ( {navigation}) => {
 
   const onSubmit = () => {
     if (typeOfView === 'edit') {
-      console.log({
-        id: values.patient,
-        values
-      })
       return appointmentsApi.edit(values.patient, values).then(() => {
         navigation.navigate('Home', {
           updateDate: new Date()
@@ -207,19 +202,16 @@ const AddAppointmentScreen = ( {navigation}) => {
                 onChange={(event, date) => handleDateTimeValues(dateTimePickerOptions.mode, date)}
             />}  
           </View>
-
-          { typeOfView === 'create' ? 
-            <Button onPress={(onSubmit)} style={{marginTop: 30, display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: 'green',}}>
-              <Ionicons name="ios-add" size={20} color="white" />
-              <Text 
-                style={{marginLeft: 5, color: '#fff', fontSize: 16, lineHeight: 19, }}>Добавить</Text>
-            </Button>
-            : <Button onPress={(onSubmit)} style={{marginTop: 30, display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: 'blue',}}>
-              <Ionicons name="ios-checkmark" size={30} color="white" />
-              <Text 
-                style={{marginLeft: 5, color: '#fff', fontSize: 16, lineHeight: 19, }}>Сохранить</Text>
-            </Button>
-          }
+          <Button onPress={(onSubmit)} style={{marginTop: 30, display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: typeOfView === 'edit' ? '#2A86FF' : '#87CC6F',}}>
+            <Ionicons 
+              name={typeOfView === 'edit' ? 'ios-checkmark' : 'ios-add'} 
+              size={typeOfView === 'edit' ? 30 : 20} color="white" />
+            <Text 
+              style={{marginLeft: 5, color: '#fff', fontSize: 16, lineHeight: 19, }}
+            >
+              {typeOfView === 'edit' ? 'Сохранить' : 'Добавить'}
+            </Text>
+          </Button>
         </Form>
       </Content>
       </Container>

@@ -2,7 +2,7 @@ import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
-import {HomeScreen, PatientScreen, AddPatientsScreen, AddAppointmentScreen, PatientsScreen} from './screens';
+import {HomeScreen, PatientScreen, AddPatientsScreen, AddAppointmentScreen, PatientsScreen, ToothFormulaScreen} from './screens';
 
 const AppNavigator = createStackNavigator({
     Home: {
@@ -19,7 +19,10 @@ const AppNavigator = createStackNavigator({
     },
     Patients: {
       screen: PatientsScreen,
-    }
+    },
+    ToothFormula: {
+      screen: ToothFormulaScreen,
+    },
   },
   {
     initialRouteName: 'Home',

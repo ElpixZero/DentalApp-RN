@@ -52,7 +52,7 @@ const PatientsScreen = ({ navigation }) => {
   
   React.useEffect( () => {
     fetchPatients();
-  }, []);
+  }, [navigation.getParam('updateDate')]);
 
   return (
     <Container>
@@ -70,7 +70,12 @@ const PatientsScreen = ({ navigation }) => {
             <Swipeable key={item._id} rightButtons={
               [<CardButton style={{
                   backgroundColor: '#B4C1CB',
-                }}>
+                }}
+                onPress={navigation.navigate.bind(this, 'AddPatient', {
+                  type: 'edit',
+                  data: item,
+                })}
+                >
                 <Ionicons 
                   name="md-create" 
                   size={22} 

@@ -19,7 +19,7 @@ const PatientScreen = ({ navigation }) => {
   const patientPhone = navigation.getParam('phone');
   const [appointments, setAppointmetns] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
- 
+
   fetchAppointments = () => {
     const patientId = navigation.getParam('id');
 
@@ -40,7 +40,12 @@ const PatientScreen = ({ navigation }) => {
         <FullName>{navigation.getParam('fullName')}</FullName>
         <SecondaryText style={{marginBottom: 20}}>{phoneFormat(patientPhone)}</SecondaryText>
         <FlexLineElems>
-          <Button style={{marginRight: 10}}>
+          <Button 
+            style={{marginRight: 10}}
+            onPress={navigation.navigate.bind(this, 'ToothFormula', {
+              data: appointments && appointments.map( item => item.dentNumber)
+            })}
+          >
             <Text style={{fontSize: 16, lineHeight: 19, color: '#fff'}}>Формула зубов</Text>
           </Button>
           <Button 

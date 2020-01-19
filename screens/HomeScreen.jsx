@@ -97,7 +97,7 @@ HomeScreen.navigationOptions = ({navigation}) => ({
     shadowOpacity: 0.8,
   },
   headerRight: () => (
-    <TouchableOpacity onPress={navigation.navigate.bind(this, 'Patients')} style={{marginRight: 15}}>
+    <TouchableOpacity onPress={navigation.navigate.bind(this, 'Patients')} style={{padding: 20}}>
       <Ionicons name="md-people" size={22} color="black" />
     </TouchableOpacity>
   ),
