@@ -54,15 +54,16 @@ const HomeScreen = ({ navigation }) => {
           onRefresh={fetchAppoinements}
           keyExtractor={item => item._id}
           renderItem={({ item } ) => (
-            <Swipeable key={item._id} rightButtons={
-              [<CardButton style={{
-                  backgroundColor: '#B4C1CB',
-                }}
-                onPress={navigation.navigate.bind(this, 'AddAppointment', {
-                  type: 'edit',
-                  data: item,
-                })}
-              >
+            <Swipeable key={item._id + item.time} rightButtons={
+              [
+                <CardButton style={{
+                    backgroundColor: '#B4C1CB',
+                  }}
+                  onPress={navigation.navigate.bind(this, 'AddAppointment', {
+                    type: 'edit',
+                    data: item,
+                  })}
+                >
                 <Ionicons 
                   name="md-create" 
                   size={22} 
@@ -76,7 +77,7 @@ const HomeScreen = ({ navigation }) => {
                  onPress={removeAppointment.bind(this, item._id)}>
                 <Ionicons name="ios-close" size={40} color="#fff" />
                </CardButton>
-               ]
+              ]
             }>
               <Appointment navigate={navigation.navigate} props={{...item}} />
             </Swipeable>

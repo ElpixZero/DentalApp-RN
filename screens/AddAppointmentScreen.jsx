@@ -4,7 +4,6 @@ import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Container, Header, Content, Title, Form, Item, Input, Label, Picker  } from 'native-base';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {NavigationActions} from 'react-navigation';
 
 import Button from '../components/Button';
 import SecondaryText from '../components/SecondaryText';
@@ -104,7 +103,7 @@ const AddAppointmentScreen = ( {navigation}) => {
       
       return setValues({
         ...values,
-        [name]: `${month}.${day}.${value.getFullYear()}`
+        [name]: `${value.getFullYear()}-${month}-${day}`
       });
     }
 
@@ -129,11 +128,14 @@ const AddAppointmentScreen = ( {navigation}) => {
 
   const convertDateForView = date => {
     try {
-      let currentDate = date.split('.');
+      const currentDate = date.split('-');
+      const year = currentDate[0];
+      const month = currentDate[1];
+      const day = currentDate[2];
 
       if (currentDate.length !== 3) return 'invalid date';
       
-      return `${currentDate[1]}.${currentDate[0]}.${currentDate[2]}`;
+      return `${day}.${month}.${year}`;
     } catch(e) {
       return 'Invalid Date'
     }

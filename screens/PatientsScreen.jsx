@@ -65,7 +65,7 @@ const PatientsScreen = ({ navigation }) => {
           data={data.filter( item => item.fullName.toLowerCase().indexOf(filter.toLowerCase()) >= 0)} 
           refreshing={isLoading}
           onRefresh={fetchPatients}
-          keyExtractor={item => item._id}
+          keyExtractor={item => item._id + item.phone + item.fullName}
           renderItem={({ item } ) => (
             <Swipeable key={item._id} rightButtons={
               [<CardButton style={{
