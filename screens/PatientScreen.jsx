@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator, 
   Text, 
   SectionList,
-  Linking
+  Linking, Modal, Alert
 } from 'react-native';
 import styled from 'styled-components/native';
 import { Foundation } from '@expo/vector-icons';
@@ -14,11 +14,15 @@ import SecondaryText from '../components/SecondaryText.jsx';
 import PatientAppintmentCard from '../components/PatientAppintmentCard.jsx';
 import { SafeAreaView, View, FlatList, StyleSheet } from 'react-native';
 import PlusButton from '../components/PlusButton';
+import { Ionicons } from '@expo/vector-icons';
+import CardButton from '../components/CardButton';
+
 
 const PatientScreen = ({ navigation }) => {
   const patientPhone = navigation.getParam('phone');
   const [appointments, setAppointmetns] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isOpenModal, setOpenModal] = React.useState(false);
 
   fetchAppointments = () => {
     const patientId = navigation.getParam('id');
@@ -57,6 +61,37 @@ const PatientScreen = ({ navigation }) => {
         </FlexLineElems>
       </PatientInfoBlock>
 
+      <Modal
+        visible={isOpenModal}
+        animationType="fade"
+        transparent={true}
+        style={{position: 'relative', backgroundColor: 'black'}}
+        onRequestClose={() => {
+          setOpenModal(!isOpenModal);
+        }}
+      >
+        <View style={{marginTop: 55, paddingRight: 20, widht: '100%', backgroundColor: '#ffffff99', display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-end'}}>
+          <CardButton style={{
+            backgroundColor: '#F85A5A',
+            marginBottom: 10
+            }}
+            onPress={setOpenModal.bind(this, !isOpenModal)}>
+          <Ionicons name="ios-close" size={40} color="#fff" />
+          </CardButton>
+
+          <CardButton style={{
+              backgroundColor: '#B4C1CB',
+            }}
+            onPress={setOpenModal.bind(this, !isOpenModal)}>
+          <Ionicons 
+            name="md-create" 
+            size={22} 
+            color="#fff"
+            />
+          </CardButton>
+        </View>
+      </Modal>
+
       <PatientAppointments>
         <PatientAppointmentsTitle>Приемы</PatientAppointmentsTitle>
         {isLoading 
@@ -69,7 +104,7 @@ const PatientScreen = ({ navigation }) => {
               data={appointments}
               refreshing={isLoading}
               onRefresh={fetchAppointments}
-              renderItem={({ item }) => <PatientAppintmentCard {...item} />}
+              renderItem={({ item }) => <PatientAppintmentCard onPress={setOpenModal.bind(this, !isOpenModal)} {...item} />}
               keyExtractor={item => item._id}
         />}
       </PatientAppointments>
@@ -79,10 +114,6 @@ const PatientScreen = ({ navigation }) => {
     </Container>
   );
 }
-
-const Fivv = styled.View`
-  height: 50px;
-`;
 
 const PatientAppointmentsTitle =  styled.Text`
   font-size: 18px;

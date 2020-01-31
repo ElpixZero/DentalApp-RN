@@ -7,6 +7,7 @@ import Swipeable from 'react-native-swipeable-row';
 import { appointmentsApi } from '../utils/api';
 import Appointment from '../components/Appointment';
 import AppointmentTitle from '../components/AppointmentTitle';
+import CardButton from '../components/CardButton';
 
 const HomeScreen = ({ navigation }) => {
   const [data, setData] = React.useState(null);
@@ -103,16 +104,6 @@ HomeScreen.navigationOptions = ({navigation}) => ({
     </TouchableOpacity>
   ),
 });
-
-const CardButton = styled.TouchableOpacity`
-  width: 70px;
-  height: 80%;
-  background-color: #B4C1CB;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-`;
 
 const Container = styled.View`
   flex: 1;

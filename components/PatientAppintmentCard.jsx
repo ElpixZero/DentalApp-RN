@@ -5,10 +5,15 @@ import { Foundation, Ionicons } from '@expo/vector-icons';
 
 import Badge from './Badge.jsx';
 
-const PatientAppointmentCardView = ({ dentNumber, diagnosis, time, price }) => {
+const PatientAppointmentCardView = ({ onPress, dentNumber, diagnosis, time, price, date }) => {
+  const transformDate = date => {
+    const dateArray = date.split('-').reverse();
+
+    return dateArray.join('-');
+  }
   return (
     <PatientAppointmentCard>
-      <MoreButton>
+      <MoreButton onPress={onPress}>
         <Ionicons name="md-more" size={22} color="#A3A3A3" />
       </MoreButton>
       <FlexLineElems style={{marginBottom: 12}}>
@@ -26,9 +31,9 @@ const PatientAppointmentCardView = ({ dentNumber, diagnosis, time, price }) => {
       </FlexLineElems>
 
       <FlexLineElems>
-        <Badge active style={{marginRight: 10, maxWidth: 175, height: 32, borderRadius: 18,}}>
-          <Text style={{fontSize: 14, lineHeight: 17, color: '#fff', fontWeight: '700'}}>{time}</Text>
-        </Badge>
+          <Badge notCenter active style={{maxWidth: 175,lineHeight: 14, marginRight: 10, height: 32, textAlign: 'left', borderRadius: 18, paddingLeft: 12}}>
+            <Text style={{color: '#ffffff65', fontSize: 12}}>{transformDate(date)}     </Text> {time}
+          </Badge>
         <Badge style={{backgroundColor: '#e5f6e0', color: '#61BB42', height: 32, maxWidth: 85, borderRadius: 18}}>
           <Text style={{fontSize: 14, lineHeight: 17, color: '#61BB42', fontWeight: '700'}}>{price} Р</Text>
         </Badge>
