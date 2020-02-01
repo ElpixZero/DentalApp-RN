@@ -32,7 +32,7 @@ const PatientAppointmentCardView = ({ onPress, dentNumber, diagnosis, time, pric
 
       <FlexLineElems>
           <Badge notCenter active style={{maxWidth: 175,lineHeight: 14, marginRight: 10, height: 32, textAlign: 'left', borderRadius: 18, paddingLeft: 12}}>
-            <Text style={{color: '#ffffff65', fontSize: 12}}>{transformDate(date)}     </Text> {time}
+            <Text style={{color: '#ffffff80', fontSize: 12}}>{transformDate(date)}     </Text> {time}
           </Badge>
         <Badge style={{backgroundColor: '#e5f6e0', color: '#61BB42', height: 32, maxWidth: 85, borderRadius: 18}}>
           <Text style={{fontSize: 14, lineHeight: 17, color: '#61BB42', fontWeight: '700'}}>{price} Р</Text>
@@ -49,7 +49,7 @@ const MoreButton = styled.TouchableOpacity`
 `;
 
 const PatientAppointmentCard = styled.View`
-  padding: 22px;
+  padding: 15px 20px;
   margin: 0 25px;
   margin-bottom: 20;
   background-color: #fff;

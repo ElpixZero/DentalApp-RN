@@ -17,11 +17,4 @@ const ToothSpaceButton = styled.TouchableOpacity`
   border-radius: 30px;
 `;
 
-const ToothSpaceButtonText = styled.Text`
-  color: #FFF;
-  font-size: 16px;
-  line-height: 19px;
-  font-weight: 400; 
-`;
-
 export default Button;

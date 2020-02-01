@@ -1,18 +1,17 @@
 import React from 'react';
 import { ActivityIndicator, 
   Text, 
-  SectionList,
-  Linking, Modal, Alert
+  Linking, Modal
 } from 'react-native';
 import styled from 'styled-components/native';
 import { Foundation } from '@expo/vector-icons';
 import phoneFormat from '../utils/phoneFormat';
 
-import { patientsApi, appointmentsApi } from '../utils/api';
+import { patientsApi } from '../utils/api';
 import Button from '../components/Button.jsx';
 import SecondaryText from '../components/SecondaryText.jsx';
 import PatientAppintmentCard from '../components/PatientAppintmentCard.jsx';
-import { SafeAreaView, View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList } from 'react-native';
 import PlusButton from '../components/PlusButton';
 import { Ionicons } from '@expo/vector-icons';
 import CardButton from '../components/CardButton';
@@ -32,6 +31,15 @@ const PatientScreen = ({ navigation }) => {
       setAppointmetns(data.data.appointments);
     })
     .finally(() => setIsLoading(false));
+  }
+
+  const onEditAppoinments = (navigation) => {
+    navigation.navigate.bind(this, 'AddAppointment', {
+      type: 'edit',
+      data: item,
+    });
+
+    setOpenModal.bind(this, false)
   }
   
   React.useEffect( () => {
@@ -82,7 +90,7 @@ const PatientScreen = ({ navigation }) => {
           <CardButton style={{
               backgroundColor: '#B4C1CB',
             }}
-            onPress={setOpenModal.bind(this, !isOpenModal)}>
+            onPress={onEditAppoinments.bind(this, navigation)}>
           <Ionicons 
             name="md-create" 
             size={22} 
@@ -93,7 +101,19 @@ const PatientScreen = ({ navigation }) => {
       </Modal>
 
       <PatientAppointments>
-        <PatientAppointmentsTitle>Приемы</PatientAppointmentsTitle>
+      <PatientAppointmentsTitle style={{textAlign: 'center'}}>Приемы</PatientAppointmentsTitle>
+        <View style={{paddingRight: 20, marginBottom: 15, paddingLeft: 20, display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button 
+              style={{marginRight: 10, height: 35, maxWidth: 140}}
+            >
+            <Text style={{fontSize: 14, lineHeight: 14, color: '#fff'}}>В процессе</Text>
+          </Button>
+          <Button 
+              style={{marginRight: 10, height: 35, backgroundColor: 'green', maxWidth: 140}}
+            >
+            <Text style={{fontSize: 14, lineHeight: 14, color: '#fff'}}>Завершенные</Text>
+          </Button>
+        </View>
         {isLoading 
           ? <ActivityIndicator
               style={{marginTop: 50}} 
@@ -116,11 +136,10 @@ const PatientScreen = ({ navigation }) => {
 }
 
 const PatientAppointmentsTitle =  styled.Text`
-  font-size: 18px;
+  font-size: 22px;
   line-height: 21px;
   font-weight: 700;
-  margin-bottom: 12;
-  padding-left: 25px;
+  margin-bottom: 20;
 `;
 
 const FlexLineElems = styled.View`
@@ -130,7 +149,7 @@ const FlexLineElems = styled.View`
 `;
 
 const FullName = styled.Text`
-  margin-top: 15px;
+  margin-top: 10px;
   font-size: 24px;
   line-height: 30px;
   color: #000000;
@@ -144,10 +163,10 @@ const Container = styled.View`
 `;
 
 const PatientInfoBlock = styled.View`
-  margin-bottom: 36px;
+  margin-bottom: 35px;
   background-color: #fff;
   padding: 0 25px;
-  padding-bottom: 32px;
+  padding-bottom: 20px;
 `;
 
 const PatientAppointments = styled.View`
