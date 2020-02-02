@@ -1,17 +1,16 @@
 import React from 'react';
-import { FlatList, Alert, View } from 'react-native';
+import { FlatList, Alert, View, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 import Swipeable from 'react-native-swipeable-row';
 import {Item, Input} from 'native-base';
 
 import { patientsApi } from '../utils/api';
-import Appointment from '../components/Appointment';
-import PlusButton from '../components/PlusButton';
+import {Appointment, PlusButton, EmptyDataMessage} from '../components';
 import phoneFormat from '../utils/phoneFormat';
 
 const PatientsScreen = ({ navigation }) => {
-  const [data, setData] = React.useState(null);
+  const [data, setData] = React.useState([]);
   const [filter, setFilter] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -61,42 +60,53 @@ const PatientsScreen = ({ navigation }) => {
           <Input onChange={onSearch } placeholder="Поиск..." />
         </Item>
       </View>
-      { data && <FlatList
-          data={data.filter( item => item.fullName.toLowerCase().indexOf(filter.toLowerCase()) >= 0)} 
-          refreshing={isLoading}
-          onRefresh={fetchPatients}
-          keyExtractor={item => item._id + item.phone + item.fullName}
-          renderItem={({ item } ) => (
-            <Swipeable key={item._id} rightButtons={
-              [<CardButton style={{
-                  backgroundColor: '#B4C1CB',
-                }}
-                onPress={navigation.navigate.bind(this, 'AddPatient', {
-                  type: 'edit',
-                  data: item,
-                })}
-                >
-                <Ionicons 
-                  name="md-create" 
-                  size={22} 
-                  color="#fff"
-                  />
-               </CardButton>, 
-               <CardButton style={{
-                  backgroundColor: '#F85A5A',
-                 }}
-                 onPress={removePatients.bind(this, item._id)}>
-                <Ionicons name="ios-close" size={40} color="#fff" />
-               </CardButton>
-              ]
-            }>
-              <Appointment navigate={navigation.navigate} props={{
-                patient: {...item},
-                diagnosis: phoneFormat(item.phone),
-              }} />
-            </Swipeable>
-          )}
-      />}
+      { isLoading  
+        ? <ActivityIndicator
+              style={{marginTop: 50}} 
+              size={24}
+              color="#2A86FF"
+            />
+        : <>
+          {
+            data.length === 0 ? <EmptyDataMessage>Нет контактов.</EmptyDataMessage>
+            : <FlatList
+            data={data.filter( item => item.fullName.toLowerCase().indexOf(filter.toLowerCase()) >= 0)} 
+            refreshing={isLoading}
+            onRefresh={fetchPatients}
+            keyExtractor={item => item._id + item.phone + item.fullName}
+            renderItem={({ item } ) => (
+              <Swipeable key={item._id} rightButtons={
+                [<CardButton style={{
+                    backgroundColor: '#B4C1CB',
+                  }}
+                  onPress={navigation.navigate.bind(this, 'AddPatient', {
+                    type: 'edit',
+                    data: item,
+                  })}
+                  >
+                  <Ionicons 
+                    name="md-create" 
+                    size={22} 
+                    color="#fff"
+                    />
+                </CardButton>, 
+                <CardButton style={{
+                    backgroundColor: '#F85A5A',
+                  }}
+                  onPress={removePatients.bind(this, item._id)}>
+                  <Ionicons name="ios-close" size={40} color="#fff" />
+                </CardButton>
+                ]
+              }>
+                <Appointment navigate={navigation.navigate} props={{
+                  patient: {...item},
+                  diagnosis: phoneFormat(item.phone),
+                }} />
+              </Swipeable>
+            )}
+            />
+          }
+        </>}
       <PlusButton navigate={() => navigation.navigate('AddPatient', {
         navigation: navigation
       })} />

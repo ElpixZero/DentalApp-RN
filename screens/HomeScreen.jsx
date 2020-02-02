@@ -1,16 +1,14 @@
 import React from 'react';
-import { SectionList, Alert, TouchableOpacity } from 'react-native';
+import { SectionList, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 import Swipeable from 'react-native-swipeable-row';
 
 import { appointmentsApi } from '../utils/api';
-import Appointment from '../components/Appointment';
-import AppointmentTitle from '../components/AppointmentTitle';
-import CardButton from '../components/CardButton';
+import {Appointment, AppointmentTitle, CardButton, EmptyDataMessage} from '../components';
 
 const HomeScreen = ({ navigation }) => {
-  const [data, setData] = React.useState(null);
+  const [data, setData] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const fetchAppoinements = () => {
@@ -49,44 +47,55 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <Container>
-      { data && <SectionList
-          sections={data}
-          refreshing={isLoading}
-          onRefresh={fetchAppoinements}
-          keyExtractor={item => item._id}
-          renderItem={({ item } ) => (
-            <Swipeable key={item._id + item.time} rightButtons={
-              [
-                <CardButton style={{
-                    backgroundColor: '#B4C1CB',
-                  }}
-                  onPress={navigation.navigate.bind(this, 'AddAppointment', {
-                    type: 'edit',
-                    data: item,
-                  })}
-                >
-                <Ionicons 
-                  name="md-create" 
-                  size={22} 
-                  color="#fff"
-                  />
-               </CardButton>, 
+      {
+        isLoading ? <ActivityIndicator
+          style={{marginTop: 50}} 
+          size={24}
+          color="#2A86FF"
+        />
+        : <> 
+          { data.length === 0 ? 
+            <EmptyDataMessage>Нет записей.</EmptyDataMessage>
+            : <SectionList
+              sections={data}
+              refreshing={isLoading}
+              onRefresh={fetchAppoinements}
+              keyExtractor={item => item._id}
+              renderItem={({ item } ) => (
+                <Swipeable key={item._id + item.time} rightButtons={
+                  [
+                    <CardButton style={{
+                        backgroundColor: '#B4C1CB',
+                      }}
+                      onPress={navigation.navigate.bind(this, 'AddAppointment', {
+                        type: 'edit',
+                        data: item,
+                      })}
+                    >
+                    <Ionicons 
+                      name="md-create" 
+                      size={22} 
+                      color="#fff"
+                      />
+                  </CardButton>, 
 
-                <CardButton style={{
-                  backgroundColor: '#F85A5A',
-                 }}
-                 onPress={removeAppointment.bind(this, item._id)}>
-                <Ionicons name="ios-close" size={40} color="#fff" />
-               </CardButton>
-              ]
-            }>
-              <Appointment navigate={navigation.navigate} props={{...item}} />
-            </Swipeable>
-          )}
-          renderSectionHeader={({ section: { title } }) => (
-            <AppointmentTitle title={title}/>
-          )}
-      />}
+                    <CardButton style={{
+                      backgroundColor: '#F85A5A',
+                    }}
+                    onPress={removeAppointment.bind(this, item._id)}>
+                    <Ionicons name="ios-close" size={40} color="#fff" />
+                  </CardButton>
+                  ]
+                }>
+                  <Appointment navigate={navigation.navigate} props={{...item}} />
+                </Swipeable>
+              )}
+              renderSectionHeader={({ section: { title } }) => (
+                <AppointmentTitle title={title}/>
+              )}
+          />}
+        </>
+      }
     </Container>
   );
 }

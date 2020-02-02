@@ -15,7 +15,7 @@ import PatientAppintmentCard from '../components/PatientAppintmentCard.jsx';
 import { View, FlatList } from 'react-native';
 import PlusButton from '../components/PlusButton';
 import { Ionicons } from '@expo/vector-icons';
-import CardButton from '../components/CardButton';
+import {CardButton, EmptyDataMessage } from '../components';
 
 
 const PatientScreen = ({ navigation }) => {
@@ -34,6 +34,7 @@ const PatientScreen = ({ navigation }) => {
 
     patientsApi.getOne(patientId, selectedTypeOfAppoints)
     .then(({data}) => {
+      console.log(data);
       setAppointmetns(data.data.appointments);
     })
     .finally(() => setIsLoading(false));
@@ -116,9 +117,9 @@ const PatientScreen = ({ navigation }) => {
             selectedValue={selectedTypeOfAppoints}
             onValueChange={(value) => setselectedTypeOfAppoints(value)}
           >
-          <Picker.Item label="В процессе" value={params.during} />
-          <Picker.Item label="Завершенные" value={params.finished} />
-        </Picker>
+            <Picker.Item label="В процессе" value={params.during} />
+            <Picker.Item label="Завершенные" value={params.finished} />
+          </Picker>
         </View>
         {isLoading 
           ? <ActivityIndicator
@@ -126,13 +127,16 @@ const PatientScreen = ({ navigation }) => {
               size={24}
               color="#2A86FF"
             />
-          : <FlatList
-              data={appointments}
-              refreshing={isLoading}
-              onRefresh={fetchAppointments}
-              renderItem={({ item }) => <PatientAppintmentCard onPress={setOpenModal.bind(this, !isOpenModal)} {...item} />}
-              keyExtractor={item => item._id}
-        />}
+          : <>
+              {appointments.length !== 0 ? <FlatList
+                data={appointments}
+                refreshing={isLoading}
+                onRefresh={fetchAppointments}
+                renderItem={({ item }) => <PatientAppintmentCard onPress={setOpenModal.bind(this, !isOpenModal)} {...item} />}
+                keyExtractor={item => item._id}
+              /> : <EmptyDataMessage>Нет записей.</EmptyDataMessage>}
+            </>
+        }
       </PatientAppointments>
       <PlusButton navigate={() => navigation.navigate('AddAppointment', {
         navigation: navigation, patientId: navigation.getParam('id'),
