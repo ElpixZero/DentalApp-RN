@@ -3,6 +3,7 @@ import { ActivityIndicator,
   Text, 
   Linking, Modal
 } from 'react-native';
+import { Picker } from "native-base";
 import styled from 'styled-components/native';
 import { Foundation } from '@expo/vector-icons';
 import phoneFormat from '../utils/phoneFormat';
@@ -18,15 +19,20 @@ import CardButton from '../components/CardButton';
 
 
 const PatientScreen = ({ navigation }) => {
+  const params = {
+    during: 'during',
+    finished: 'finished'
+  };
   const patientPhone = navigation.getParam('phone');
   const [appointments, setAppointmetns] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isOpenModal, setOpenModal] = React.useState(false);
+  const [selectedTypeOfAppoints, setselectedTypeOfAppoints] = React.useState(params.during);
 
   fetchAppointments = () => {
     const patientId = navigation.getParam('id');
 
-    patientsApi.getOne(patientId)
+    patientsApi.getOne(patientId, selectedTypeOfAppoints)
     .then(({data}) => {
       setAppointmetns(data.data.appointments);
     })
@@ -44,7 +50,7 @@ const PatientScreen = ({ navigation }) => {
   
   React.useEffect( () => {
     fetchAppointments();
-  }, []);
+  }, [selectedTypeOfAppoints]);
 
   return (
     <Container>
@@ -101,18 +107,18 @@ const PatientScreen = ({ navigation }) => {
       </Modal>
 
       <PatientAppointments>
-      <PatientAppointmentsTitle style={{textAlign: 'center'}}>Приемы</PatientAppointmentsTitle>
-        <View style={{paddingRight: 20, marginBottom: 15, paddingLeft: 20, display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Button 
-              style={{marginRight: 10, height: 35, maxWidth: 140}}
-            >
-            <Text style={{fontSize: 14, lineHeight: 14, color: '#fff'}}>В процессе</Text>
-          </Button>
-          <Button 
-              style={{marginRight: 10, height: 35, backgroundColor: 'green', maxWidth: 140}}
-            >
-            <Text style={{fontSize: 14, lineHeight: 14, color: '#fff'}}>Завершенные</Text>
-          </Button>
+        <View style={{paddingRight: 20, marginBottom: 15, paddingLeft: 20, display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between'}}>
+          <PatientAppointmentsTitle style={{textAlign: 'center'}}>Приемы</PatientAppointmentsTitle>
+          <Picker
+            note
+            mode="dropdown"
+            style={{ maxWidth: 150 }}
+            selectedValue={selectedTypeOfAppoints}
+            onValueChange={(value) => setselectedTypeOfAppoints(value)}
+          >
+          <Picker.Item label="В процессе" value={params.during} />
+          <Picker.Item label="Завершенные" value={params.finished} />
+        </Picker>
         </View>
         {isLoading 
           ? <ActivityIndicator
@@ -136,10 +142,9 @@ const PatientScreen = ({ navigation }) => {
 }
 
 const PatientAppointmentsTitle =  styled.Text`
-  font-size: 22px;
+  font-size: 16px;
   line-height: 21px;
   font-weight: 700;
-  margin-bottom: 20;
 `;
 
 const FlexLineElems = styled.View`
