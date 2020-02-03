@@ -130,15 +130,15 @@ const PatientScreen = ({ navigation }) => {
           : <> 
             {
               error ? <SpecialMessage warning>{error}</SpecialMessage>
-              : <>
-              {appointments.length !== 0 ? <FlatList
+              : <FlatList
+                style={{marginBottom: 210}}
+                ListEmptyComponent={<SpecialMessage>Нет записей.</SpecialMessage>}
                 data={appointments}
                 refreshing={isLoading}
                 onRefresh={fetchAppointments}
                 renderItem={({ item }) => <PatientAppintmentCard onPress={setOpenModal.bind(this, !isOpenModal)} {...item} />}
                 keyExtractor={item => item._id}
-              /> : <SpecialMessage>Нет записей.</SpecialMessage>}
-            </>
+              />
             }
           </> 
         }
