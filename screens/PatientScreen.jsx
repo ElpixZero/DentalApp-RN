@@ -15,7 +15,7 @@ import PatientAppintmentCard from '../components/PatientAppintmentCard.jsx';
 import { View, FlatList } from 'react-native';
 import PlusButton from '../components/PlusButton';
 import { Ionicons } from '@expo/vector-icons';
-import {CardButton, EmptyDataMessage } from '../components';
+import {CardButton, SpecialMessage } from '../components';
 
 
 const PatientScreen = ({ navigation }) => {
@@ -24,6 +24,7 @@ const PatientScreen = ({ navigation }) => {
     finished: 'finished'
   };
   const patientPhone = navigation.getParam('phone');
+  const [error, setError] = React.useState('');
   const [appointments, setAppointmetns] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isOpenModal, setOpenModal] = React.useState(false);
@@ -34,9 +35,8 @@ const PatientScreen = ({ navigation }) => {
 
     patientsApi.getOne(patientId, selectedTypeOfAppoints)
     .then(({data}) => {
-      console.log(data);
       setAppointmetns(data.data.appointments);
-    })
+    }).catch(e => setError('Ошибка подключения. Попробуйте, пожалуйста, позже.'))
     .finally(() => setIsLoading(false));
   }
 
@@ -127,15 +127,20 @@ const PatientScreen = ({ navigation }) => {
               size={24}
               color="#2A86FF"
             />
-          : <>
+          : <> 
+            {
+              error ? <SpecialMessage warning>{error}</SpecialMessage>
+              : <>
               {appointments.length !== 0 ? <FlatList
                 data={appointments}
                 refreshing={isLoading}
                 onRefresh={fetchAppointments}
                 renderItem={({ item }) => <PatientAppintmentCard onPress={setOpenModal.bind(this, !isOpenModal)} {...item} />}
                 keyExtractor={item => item._id}
-              /> : <EmptyDataMessage>Нет записей.</EmptyDataMessage>}
+              /> : <SpecialMessage>Нет записей.</SpecialMessage>}
             </>
+            }
+          </> 
         }
       </PatientAppointments>
       <PlusButton navigate={() => navigation.navigate('AddAppointment', {

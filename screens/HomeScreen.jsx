@@ -5,17 +5,19 @@ import styled from 'styled-components/native';
 import Swipeable from 'react-native-swipeable-row';
 
 import { appointmentsApi } from '../utils/api';
-import {Appointment, AppointmentTitle, CardButton, EmptyDataMessage} from '../components';
+import {Appointment, AppointmentTitle, CardButton, SpecialMessage} from '../components';
 
 const HomeScreen = ({ navigation }) => {
+  const [error, setError] = React.useState('');
   const [data, setData] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const fetchAppoinements = () => {
     setIsLoading(true);  
-    appointmentsApi.get().then( ({ data }) => {
-      setData(data.data);
-    }).finally(() => setIsLoading(false));
+    appointmentsApi.get().then( (a) => {
+      setData(a.data.data);
+    }).catch(e => setError('Ошибка подключения. Попробуйте, пожалуйста, позже.'))
+    .finally(() => setIsLoading(false));
   }
 
   React.useEffect( () => {
@@ -54,8 +56,11 @@ const HomeScreen = ({ navigation }) => {
           color="#2A86FF"
         />
         : <> 
-          { data.length === 0 ? 
-            <EmptyDataMessage>Нет записей.</EmptyDataMessage>
+          {
+            error ? <SpecialMessage warning>{error}</SpecialMessage>
+            : <> 
+              { data.length === 0 ? 
+                <SpecialMessage>Нет записей.</SpecialMessage>
             : <SectionList
               sections={data}
               refreshing={isLoading}
@@ -94,6 +99,8 @@ const HomeScreen = ({ navigation }) => {
                 <AppointmentTitle title={title}/>
               )}
           />}
+            </>
+          }
         </>
       }
     </Container>

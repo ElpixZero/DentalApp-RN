@@ -6,11 +6,12 @@ import Swipeable from 'react-native-swipeable-row';
 import {Item, Input} from 'native-base';
 
 import { patientsApi } from '../utils/api';
-import {Appointment, PlusButton, EmptyDataMessage} from '../components';
+import {Appointment, PlusButton, SpecialMessage} from '../components';
 import phoneFormat from '../utils/phoneFormat';
 
 const PatientsScreen = ({ navigation }) => {
   const [data, setData] = React.useState([]);
+  const [error, setError] = React.useState('');
   const [filter, setFilter] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -18,7 +19,8 @@ const PatientsScreen = ({ navigation }) => {
     setIsLoading(true);  
     patientsApi.get().then( ({ data }) => {
       setData(data.data);
-    }).finally(() => setIsLoading(false));
+    }).catch(e => setError('Ошибка подключения. Попробуйте, пожалуйста, позже.'))
+    .finally(() => setIsLoading(false));
   }
 
   const removePatients = id => {
@@ -66,47 +68,53 @@ const PatientsScreen = ({ navigation }) => {
               size={24}
               color="#2A86FF"
             />
-        : <>
+        : <> 
           {
-            data.length === 0 ? <EmptyDataMessage>Нет контактов.</EmptyDataMessage>
-            : <FlatList
-            data={data.filter( item => item.fullName.toLowerCase().indexOf(filter.toLowerCase()) >= 0)} 
-            refreshing={isLoading}
-            onRefresh={fetchPatients}
-            keyExtractor={item => item._id + item.phone + item.fullName}
-            renderItem={({ item } ) => (
-              <Swipeable key={item._id} rightButtons={
-                [<CardButton style={{
-                    backgroundColor: '#B4C1CB',
-                  }}
-                  onPress={navigation.navigate.bind(this, 'AddPatient', {
-                    type: 'edit',
-                    data: item,
-                  })}
-                  >
-                  <Ionicons 
-                    name="md-create" 
-                    size={22} 
-                    color="#fff"
-                    />
-                </CardButton>, 
-                <CardButton style={{
-                    backgroundColor: '#F85A5A',
-                  }}
-                  onPress={removePatients.bind(this, item._id)}>
-                  <Ionicons name="ios-close" size={40} color="#fff" />
-                </CardButton>
-                ]
-              }>
-                <Appointment navigate={navigation.navigate} props={{
-                  patient: {...item},
-                  diagnosis: phoneFormat(item.phone),
-                }} />
-              </Swipeable>
-            )}
-            />
+            error ? <SpecialMessage warning>{error}</SpecialMessage>
+            :   <>
+            {
+              data.length === 0 ? <SpecialMessage>Нет контактов.</SpecialMessage>
+              : <FlatList
+              data={data.filter( item => item.fullName.toLowerCase().indexOf(filter.toLowerCase()) >= 0)} 
+              refreshing={isLoading}
+              onRefresh={fetchPatients}
+              keyExtractor={item => item._id + item.phone + item.fullName}
+              renderItem={({ item } ) => (
+                <Swipeable key={item._id} rightButtons={
+                  [<CardButton style={{
+                      backgroundColor: '#B4C1CB',
+                    }}
+                    onPress={navigation.navigate.bind(this, 'AddPatient', {
+                      type: 'edit',
+                      data: item,
+                    })}
+                    >
+                    <Ionicons 
+                      name="md-create" 
+                      size={22} 
+                      color="#fff"
+                      />
+                  </CardButton>, 
+                  <CardButton style={{
+                      backgroundColor: '#F85A5A',
+                    }}
+                    onPress={removePatients.bind(this, item._id)}>
+                    <Ionicons name="ios-close" size={40} color="#fff" />
+                  </CardButton>
+                  ]
+                }>
+                  <Appointment navigate={navigation.navigate} props={{
+                    patient: {...item},
+                    diagnosis: phoneFormat(item.phone),
+                  }} />
+                </Swipeable>
+              )}
+              />
+            }
+          </>
           }
-        </>}
+        </>
+      }
       <PlusButton navigate={() => navigation.navigate('AddPatient', {
         navigation: navigation
       })} />

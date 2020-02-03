@@ -28,17 +28,21 @@ const AddPatientScreen = ( {navigation}) => {
   }
 
   const submitError = e => {    
-    if (e.response.data.message.length === 1) {
-      const errorField = e.response.data.message[0].param;
-      alert(`Ошибка!\n\nПоле: "${fieldsLabels[errorField]}" указан неверно`);
-    } else {
-      let errorsArr = [];
-
-      e.response.data.message.forEach( item => {
-        errorsArr.push(`"${fieldsLabels[item.param]}"`);
-      });
-
-      return alert(`Ошибка!\n\nПоля: ${errorsArr.join(', ')} указаны неверно.`);
+    try {
+      if (e.response.data.message.length === 1) {
+        const errorField = e.response.data.message[0].param;
+        alert(`Ошибка!\n\nПоле: "${fieldsLabels[errorField]}" указан неверно`);
+      } else {
+        let errorsArr = [];
+  
+        e.response.data.message.forEach( item => {
+          errorsArr.push(`"${fieldsLabels[item.param]}"`);
+        });
+  
+        return alert(`Ошибка!\n\nПоля: ${errorsArr.join(', ')} указаны неверно.`);
+      }
+    } catch {
+      return alert('Нет подключения. Попробуйте, пожалуйста, позже.');
     }
   }
 
