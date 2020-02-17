@@ -106,6 +106,7 @@ const HomeScreen = ({ navigation }) => {
     </Container>
   );
 }
+
 HomeScreen.navigationOptions = ({navigation}) => ({
   title: 'Журнал приемов',
   headerTintColor: '#2A86FF',
@@ -119,6 +120,7 @@ HomeScreen.navigationOptions = ({navigation}) => ({
     </TouchableOpacity>
   ),
 });
+
 const Container = styled.View`
   flex: 1;
   background-color: #fff;

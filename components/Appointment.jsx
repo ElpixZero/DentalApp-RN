@@ -1,16 +1,18 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 import styled from 'styled-components/native';
 
 import SecondaryText from './SecondaryText.jsx';
 import Badge from './Badge.jsx';
 import getAvatarColor from '../utils/getAvatarColor';
 
-const Group = ( { patient, diagnosis, active, time, navigate }) => {
+const Group = ({props, navigate} ) => {
+  const { patient, diagnosis, active, time } = props;
   return (
     <GroupItem onPress={() => navigate('Patient', {
-      fullName: patient.fullName, phone: patient.phone, diagnosis, time
-    })}>
+      fullName: patient.fullName, phone: patient.phone, diagnosis, time, id: patient._id
+      })}
+    >
       <Avatar style={{backgroundColor: getAvatarColor(patient.fullName[0]).background}}>
         <Letter style={{color: getAvatarColor(patient.fullName[0]).color}}>{patient.fullName[0].toUpperCase()}</Letter>
       </Avatar>
@@ -18,8 +20,8 @@ const Group = ( { patient, diagnosis, active, time, navigate }) => {
         <FullName>{patient.fullName}</FullName>
         <SecondaryText>{diagnosis}</SecondaryText>
       </View>
-      <Badge active={active} style={{borderRadius: 18, height: 32, maxWidth: 70}}>{time}</Badge>
-  </GroupItem>
+      {time && <Badge active={active} style={{borderRadius: 18, height: 32, maxWidth: 70}}>{time}</Badge>}
+    </GroupItem>
   );
 }
 
