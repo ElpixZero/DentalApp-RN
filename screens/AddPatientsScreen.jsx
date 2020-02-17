@@ -4,13 +4,14 @@ import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Container, Header, Content, Form, Item, Input, Label } from 'native-base';
 import Button from '../components/Button'
-import {patiensApi} from '../utils/api';
+import {patientsApi} from '../utils/api';
 
 const AddPatientScreen = ( {navigation}) => {
-  console.log('test', navigation);
+  const typeOfView = navigation.getParam('type');
+  const propsData = navigation.getParam('data');
   const [values, setValues] = React.useState({
-    fullName: '',
-    phone: ''
+    fullName: `${propsData && propsData.fullName ? propsData.fullName : ''}`,
+    phone: `${propsData && propsData.phone ? propsData.phone : ''}`
   });
 
   const hangleChange = (name, e) => {
@@ -21,10 +22,44 @@ const AddPatientScreen = ( {navigation}) => {
     })
   }
 
+  const fieldsLabels = {
+    fullName: 'Имя и фамилия',
+    phone: 'Номер телефона'
+  }
+
+  const submitError = e => {    
+    try {
+      if (e.response.data.message.length === 1) {
+        const errorField = e.response.data.message[0].param;
+        alert(`Ошибка!\n\nПоле: "${fieldsLabels[errorField]}" указан неверно`);
+      } else {
+        let errorsArr = [];
+  
+        e.response.data.message.forEach( item => {
+          errorsArr.push(`"${fieldsLabels[item.param]}"`);
+        });
+  
+        return alert(`Ошибка!\n\nПоля: ${errorsArr.join(', ')} указаны неверно.`);
+      }
+    } catch {
+      return alert('Нет подключения. Попробуйте, пожалуйста, позже.');
+    }
+  }
+
   const onSubmit = () => {
-    patiensApi.add(values).then(() => {
-      navigation.navigate('Home')
-    })
+    if (typeOfView === 'edit') {
+      return patientsApi.edit(propsData._id, values).then(() => {
+        navigation.navigate('Patients', {
+          updateDate: new Date(),
+        });
+      }).catch(submitError);
+    }
+
+    patientsApi.add(values).then(() => {
+      navigation.navigate('Patients', {
+        updateDate: new Date(),
+      });
+    }).catch(submitError);
   }
 
   return (
@@ -46,10 +81,20 @@ const AddPatientScreen = ( {navigation}) => {
               dataDetectorTypes="phoneNumber" 
               style={{marginTop: 12}} />
           </Item>
-            <Button onPress={(onSubmit)} style={{marginTop: 30, display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: 'green',}}>
-              <Ionicons name="ios-add" size={20} color="white" />
+            <Button onPress={(onSubmit)} 
+              style={{marginTop: 30, 
+                display: 'flex', 
+                flexDirection: 'row', 
+                alignItems: 'center', 
+                backgroundColor: typeOfView === 'edit' ? '#2A86FF' : '#87CC6F'}}>
+              <Ionicons 
+                name={typeOfView === 'edit' ? 'ios-checkmark' : 'ios-add'} 
+                size={typeOfView === 'edit' ? 30 : 20} color="white" />
               <Text 
-                style={{marginLeft: 5, color: '#fff', fontSize: 16, lineHeight: 19, }}>Добавить</Text>
+                style={{marginLeft: 5, color: '#fff', fontSize: 16, lineHeight: 19, }}
+              >
+                {typeOfView === 'edit' ? 'Сохранить' : 'Добавить'}
+              </Text>
             </Button>
         </Form>
       </Content>
